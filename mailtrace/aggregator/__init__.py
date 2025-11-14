@@ -1,10 +1,10 @@
 import re
 from dataclasses import dataclass
 
+from mailtrace import logger
 from mailtrace.aggregator.base import LogAggregator
 from mailtrace.aggregator.opensearch import OpenSearch
 from mailtrace.aggregator.ssh_host import SSHHost
-from mailtrace.log import logger
 from mailtrace.models import LogQuery, PostfixServiceType
 
 _SUCCESS_RE = re.compile(r".*([0-9]{3})\s.*")

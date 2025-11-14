@@ -5,9 +5,9 @@ import urllib3
 from opensearchpy import OpenSearch as OpenSearchClient
 from opensearchpy.helpers.search import Search
 
+from mailtrace import logger
 from mailtrace.aggregator.base import LogAggregator
 from mailtrace.config import Config
-from mailtrace.log import logger
 from mailtrace.models import LogEntry, LogQuery
 from mailtrace.parser import OpensearchParser
 from mailtrace.utils import get_hosts, time_range_to_timedelta

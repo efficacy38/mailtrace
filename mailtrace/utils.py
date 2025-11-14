@@ -4,7 +4,7 @@ import re
 from typing import List
 from urllib.parse import urlparse
 
-from mailtrace.log import logger
+from mailtrace import logger
 
 
 def time_validation(time: str, time_range: str) -> str:
