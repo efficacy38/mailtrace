@@ -1,10 +1,11 @@
 import datetime
+import logging
 
 import paramiko
 
+logger = logging.getLogger("mailtrace")
 from mailtrace.aggregator.base import LogAggregator
 from mailtrace.config import Config
-from mailtrace.log import logger
 from mailtrace.models import LogEntry, LogQuery
 from mailtrace.parser import PARSERS
 from mailtrace.utils import time_range_to_timedelta
