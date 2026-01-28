@@ -4,3 +4,4 @@ config.yaml
 *egg-info
 .direnv
 .worktrees/
+build

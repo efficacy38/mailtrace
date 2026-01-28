@@ -31,6 +31,9 @@ dev = [
     "pytest-cov>=7.0.0",
 ]
 
+[tool.setuptools.packages.find]
+include = ["mailtrace*"]
+
 [tool.flake8]
 exclude = ".venv"
 ignore = ['E501', 'E704', 'W503']
