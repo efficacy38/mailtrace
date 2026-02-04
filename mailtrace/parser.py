@@ -7,7 +7,7 @@ from mailtrace.models import LogEntry
 from mailtrace.utils import analyze_log_from_message
 
 # Mail ID validation pattern (alphanumeric only)
-_MAIL_ID_RE = re.compile(r"^[0-9A-Z]+$")
+_MAIL_ID_RE = re.compile(r"^[0-9A-Za-z]+$")
 
 # Message-ID extraction from syslog message text (e.g., "message-id=<foo@bar>")
 _MESSAGE_ID_RE = re.compile(r"message-id=<([^>]+)>")

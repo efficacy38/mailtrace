@@ -71,11 +71,38 @@ def trace_mail_flow(
         aggregator = aggregator_class(current_host, config)
 
 
+def _build_hostname_map(
+    all_logs: list[LogEntry],
+) -> dict[str, str]:
+    """Build a map from short hostname to the canonical log hostname.
+
+    Relay entries use FQDNs (e.g. mailer4.test.cc.cs.nctu.edu.tw) but
+    log entries use short names (e.g. mailer4).  This map lets us
+    normalize relay hostnames to match the log hostnames so the graph
+    nodes connect properly.
+    """
+    hostname_map: dict[str, str] = {}
+    for entry in all_logs:
+        if entry.hostname:
+            short = entry.hostname.split(".")[0]
+            hostname_map[short] = entry.hostname
+            hostname_map[entry.hostname] = entry.hostname
+    return hostname_map
+
+
+def _normalize_host(host: str, hostname_map: dict[str, str]) -> str:
+    """Resolve a relay hostname to the canonical log hostname."""
+    short = host.split(".")[0]
+    return hostname_map.get(short, host)
+
+
 def _reconstruct_chain(all_logs: list[LogEntry], graph: MailGraph) -> None:
     """Reconstruct the mail flow graph from a batch of logs.
 
     Groups logs by queue_id and finds relay hops to build the graph.
     """
+    hostname_map = _build_hostname_map(all_logs)
+
     # Group logs by queue_id
     logs_by_qid: dict[str, list[LogEntry]] = {}
     for entry in all_logs:
@@ -92,16 +119,17 @@ def _reconstruct_chain(all_logs: list[LogEntry], graph: MailGraph) -> None:
             if entry.service not in _RELAY_SERVICES:
                 continue
             result = _parse_relay_info(entry)
-            if result:
+            if result and result.relay_host:
+                to_host = _normalize_host(result.relay_host, hostname_map)
                 logger.info(
                     "Batch trace: %s relayed from %s to %s",
                     qid,
                     hostname,
-                    result.relay_host,
+                    to_host,
                 )
                 graph.add_hop(
                     from_host=hostname,
-                    to_host=result.relay_host,
+                    to_host=to_host,
                     queue_id=qid,
                 )
 
