@@ -186,8 +186,9 @@ class SSHHost(LogAggregator):
         """
         if not keywords:
             return ""
-        # SECURITY: Use shlex.quote() to prevent command injection
-        return "".join(f"| grep -iE {shlex.quote(keyword)}" for keyword in keywords)
+        # Combine keywords into a single regex for an OR search, which is more efficient.
+        patterns = "|".join(keywords)
+        return f"| grep -iE {shlex.quote(patterns)}"
 
     def query_by(self, query: LogQuery) -> list[LogEntry]:
         """
